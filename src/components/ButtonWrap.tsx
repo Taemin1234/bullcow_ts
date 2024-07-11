@@ -1,6 +1,11 @@
 import Button from "./Button";
 
-function ButtonWrap({ clearNumber, checkNumber }) {
+interface ButtonWrapPrps {
+  clearNumber: () => void;
+  checkNumber: () => void;
+}
+
+function ButtonWrap({ clearNumber, checkNumber }:ButtonWrapPrps) {
   return (
     <>
       <Button children={"확인"} className="check" onClick={checkNumber} />
