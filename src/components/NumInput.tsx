@@ -1,6 +1,12 @@
 import Button from "./Button";
 
-function NumInput({ btnNumber, chooseAnswer, disableBtn }) {
+interface NumInputProps {
+  btnNumber: number[];
+  chooseAnswer: (btn:number) => void;
+  disableBtn: number[];
+}
+
+function NumInput({ btnNumber, chooseAnswer, disableBtn }:NumInputProps) {
   return (
     <div className="num-input">
       {btnNumber.map((btn, i) => {

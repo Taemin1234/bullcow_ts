@@ -1,4 +1,8 @@
-function MyAnswer({ myAnswer }) {
+interface MyAnswerPrps {
+  myAnswer: number[];
+}
+
+function MyAnswer({ myAnswer}:MyAnswerPrps) {
   return (
     <div className="my-answer">
       {myAnswer.map((ans, i) => {
