@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import "./App.css";
 
@@ -24,10 +24,11 @@ function App() {
   const [updateRecord, setUpdateRecord] = useState<RecordEntry[]>([]);
   const [tryCount, setTryCount] = useState<number>(1);
 
-  const arrAnswer:number[] = [];
+  // const arrAnswer:number[] = [];
   const btnNumber:number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  const generateAnswer = () => {
+  const generateAnswer = useCallback(() => {
+    const arrAnswer:number[] = [];
     for (let i = 0; i < 4; i++) {
       const rand = Math.floor(Math.random() * 10);
       if (arrAnswer.indexOf(rand) === -1) {
@@ -37,12 +38,12 @@ function App() {
       }
     }
     setAnswer(arrAnswer);
-  };
+  }, []);
   console.log(`정답 ${answer}`);
 
   useEffect(() => {
     generateAnswer();
-  }, []);
+  }, [generateAnswer]);
 
   const chooseAnswer = (n:number) => {
     setMyAnswer((prevMyNum) => {
