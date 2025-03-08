@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import "./App.css";
 
@@ -7,19 +7,28 @@ import Record from "./components/Record";
 import NumInput from "./components/NumInput";
 import ButtonWrap from "./components/ButtonWrap";
 
+export interface RecordEntry {
+  myAnswer: number[];
+  strikes: number;
+  balls: number;
+  outs: number;
+  tryCount: number;
+}
+
 function App() {
   const MAX_CORRECT = 4;
 
-  const [answer, setAnswer] = useState<number>();
+  const [answer, setAnswer] = useState<number[] | undefined>();
   const [myAnswer, setMyAnswer] = useState<number[]>([]);
-  const [disableBtn, setDisableBtn] = useState([]);
-  const [updateRecord, setUpdateRecord] = useState([]);
+  const [disableBtn, setDisableBtn] = useState<number[]>([]);
+  const [updateRecord, setUpdateRecord] = useState<RecordEntry[]>([]);
   const [tryCount, setTryCount] = useState<number>(1);
 
-  const arrAnswer:number[] = [];
+  // const arrAnswer:number[] = [];
   const btnNumber:number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-  const generateAnswer = () => {
+  const generateAnswer = useCallback(() => {
+    const arrAnswer:number[] = [];
     for (let i = 0; i < 4; i++) {
       const rand = Math.floor(Math.random() * 10);
       if (arrAnswer.indexOf(rand) === -1) {
@@ -29,15 +38,15 @@ function App() {
       }
     }
     setAnswer(arrAnswer);
-  };
+  }, []);
   console.log(`정답 ${answer}`);
 
   useEffect(() => {
     generateAnswer();
-  }, []);
+  }, [generateAnswer]);
 
   const chooseAnswer = (n:number) => {
-    setMyAnswer((prevMyNum:number[]) => {
+    setMyAnswer((prevMyNum) => {
       // 길이가 4 이상이면 더이상 추가 x
       if (prevMyNum.length < 4) {
         return [...prevMyNum, n];
@@ -45,7 +54,7 @@ function App() {
       return prevMyNum;
     });
 
-    setDisableBtn((prevDisabled:number[]) => {
+    setDisableBtn((prevDisabled) => {
       if (prevDisabled.length < 4) {
         return [...prevDisabled, n];
       }
@@ -64,7 +73,8 @@ function App() {
   };
 
   const evaluateAnswer = () => {
-    const matchingNumbers = answer.filter((x:number) => myAnswer.includes(x));
+    if (!answer) return; //'answer'가 undefined인 경우 함수 종료
+    const matchingNumbers = answer.filter((x) => myAnswer.includes(x));
     const strikes = countMatchingPositions(answer, myAnswer);
     const balls = matchingNumbers.length - strikes;
     const outs = MAX_CORRECT - matchingNumbers.length;
@@ -95,9 +105,9 @@ function App() {
 
   // 중간 과정알리는 상황 제공
   function updateRecordList(myAnswer:number[], strikes:number, balls:number, outs:number, tryCount:number) {
-    setUpdateRecord((prevUpdate:number[]) => [
+    setUpdateRecord((prevUpdate) => [
       ...prevUpdate,
-      [myAnswer, strikes, balls, outs, tryCount],
+      {myAnswer, strikes, balls, outs, tryCount},
     ]);
   }
 

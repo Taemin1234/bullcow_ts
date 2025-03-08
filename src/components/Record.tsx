@@ -1,15 +1,21 @@
-function Record({ updateRecord }) {
+import { RecordEntry } from '../App'; // App 파일에서 인터페이스를 import
+
+interface RecordProps {
+  updateRecord: RecordEntry[];
+}
+
+function Record({ updateRecord }:RecordProps) {
   return (
     <div className="record">
       <ul className="record-list-wrap">
         {[...updateRecord].reverse().map((rec, i) => {
           return (
             <li className="record-list" key={i}>
-              <p>{rec[4]}.</p>
-              <p className="num">{rec[0]}</p>
-              <p className="strk">{rec[1]}S</p>
-              <p className="ball">{rec[2]}B</p>
-              <p className="out">{rec[3]}O</p>
+              <p>{rec.tryCount}.</p>
+              <p className="num">{rec.myAnswer}</p>
+              <p className="strk">{rec.strikes}S</p>
+              <p className="ball">{rec.balls}B</p>
+              <p className="out">{rec.outs}O</p>
             </li>
           );
         })}
